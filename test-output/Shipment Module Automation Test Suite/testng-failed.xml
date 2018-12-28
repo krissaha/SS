@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite guice-stage="DEVELOPMENT" name="Failed suite [Shipment Module Automation Test Suite]">
+  <listeners>
+    <listener class-name="com.qa.Report.ExtentReportListner"/>
+  </listeners>
+  <test thread-count="5" name="Shipment Module(failed)">
+    <classes>
+      <class name="com.qa.shipment.test.Login">
+        <methods>
+          <include name="tearDown"/>
+          <include name="search_shipment_global"/>
+          <include name="logincredentials"/>
+        </methods>
+      </class> <!-- com.qa.shipment.test.Login -->
+    </classes>
+  </test> <!-- Shipment Module(failed) -->
+</suite> <!-- Failed suite [Shipment Module Automation Test Suite] -->
