@@ -1,9 +1,12 @@
 package com.qa.shipment.test;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -13,7 +16,9 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -22,21 +27,23 @@ import org.testng.annotations.Test;
 public class Login 
 {
 	public static WebDriver driver;
+	public static Properties prop;
+	public static WebDriverWait wait;
 	
 	@BeforeMethod
-	public void logincredentials() throws InterruptedException
+	public void logincredentials() throws Exception
 	{	
-		//Launching chrome driver
-		System.setProperty("webdriver.chrome.driver","E:\\Selenium\\chromedriver.exe");
-	    driver=new ChromeDriver();
-	    //Launching url
-		driver.get("https://appdev.nvisionglobal.com/Account/Login");
+		// Initialization of properties file
+		prop= new Properties();
+		FileInputStream ip = new FileInputStream("E:/Selenium/Shipment/src/main/java/com/qa/shipment/config/Config.properties");
+		prop.load(ip);
+		System.setProperty("webdriver.chrome.driver","E:\\Selenium\\chromedriver.exe");  //Launching chrome driver
+		driver=new ChromeDriver();
+	    driver.get(prop.getProperty("Url")); //Launching url
 		driver.manage().window().maximize();
-		// Entering email and password
-		driver.findElement(By.xpath("//input[@id='Email']")).sendKeys("saishreedas@gmail.com");
-		driver.findElement(By.xpath("//input[@id='Password']")).sendKeys("Liza@1993");
-		// Enter Captcha
-		String hiddenCaptchaVal = "";
+		driver.findElement(By.xpath("//input[@id='Email']")).sendKeys(prop.getProperty("Email"));  // Entering email and password
+		driver.findElement(By.xpath("//input[@id='Password']")).sendKeys(prop.getProperty("Password"));
+		String hiddenCaptchaVal = "";   // Enter Captcha
 		hiddenCaptchaVal = driver.findElement(By.id("HiddenCaptcha")).getAttribute("value");
 	    driver.findElement(By.id("Captcha")).sendKeys(hiddenCaptchaVal);
 	    Thread.sleep(2000);
@@ -146,6 +153,7 @@ public class Login
 		Thread.sleep(1000);
 		driver.findElement(By.xpath("//a[contains(text(),'Add New Orgin/Destination')]")).click();
 		Thread.sleep(2000);
+		
 		// Add Origin details
 		driver.findElement(By.xpath("//span[contains(text(),'Both')]")).click();
 		Thread.sleep(5000);
@@ -176,32 +184,33 @@ public class Login
 	    driver.findElement(By.xpath("//a[contains(text(),'Add New Orgin/Destination')]")).click();
 		Thread.sleep(2000);
 		driver.findElement(By.xpath("//span[contains(text(),'Both')]")).click();
-		Thread.sleep(5000);
+		Thread.sleep(4000);
 		driver.findElement(By.xpath("//ul[@id='ddlStopType_listbox']//child::li[3]")).click();
 		Thread.sleep(2000);
 		driver.findElement(By.xpath("//a[@id='lookupLocationID']")).click();
 		Thread.sleep(5000);
 		// Select details from the child window 				
-		driver.findElement(By.xpath("//div[@id='modalDialog']//span[contains(text(), '- Select -')]")).click();
-		Thread.sleep(10000);
-		driver.findElement(By.xpath("//ul[@id='LocationCountry_listbox']//child::li[3]")).click();
+		driver.findElement(By.xpath("//div[@id='modalDialog']//input[@id='LocId']")).sendKeys("DEN USAUR");
 		Thread.sleep(2000);
 		driver.findElement(By.xpath("//div[@id='modalDialog']//button[@id='btnLocationSearch']")).click();
-		Thread.sleep(10000);
+		Thread.sleep(2000);
 		driver.findElement(By.xpath("//*[@id='Location']/div[3]/table/tbody/tr[3]/td[1]/input")).click();
 	    Thread.sleep(2000);
 	    driver.findElement(By.xpath("//div[@class='ui-dialog-buttonset']//button[@id='Select']")).click();
 	    Thread.sleep(5000);
-	 // Calender input code!!
-	    driver.findElement(By.xpath("//*[@id='frmInnerGrid']/div/div/div[1]/div[1]/div/div[2]/span/span/span/span[1]")).click();
-	    Thread.sleep(2000);
-	    driver.findElement(By.xpath("//div[@class='k-animation-container']//a[@class='k-link k-nav-today']")).click();
+	    JavascriptExecutor js1 = (JavascriptExecutor) driver;
+		js1.executeScript("window.scrollBy(0,200)");
+		Thread.sleep(5000);
+	    // Calender input code!!
+	    driver.findElement(By.xpath("/html/body/div[1]/div/div/div[2]/div/div[2]/div[1]/div[4]/div[2]/div[1]/div/div[3]/table/tbody/tr[4]/td[2]/div/div/div/form/div/div/div[1]/div[1]/div/div[2]/span/span/span/span[1]")).click();
+	    Thread.sleep(5000);
+	    driver.findElement(By.xpath("/html/body/div[61]/div/div/div[1]/a[3]/span")).click();
+	    
 	    Thread.sleep(2000);
 	    driver.findElement(By.xpath("//a[@id='btnEdit' and @class='k-button k-button-icontext k-primary k-grid-update btnEdit']")).click();
 	    Thread.sleep(7000);		
 	     
-	     
-	     
+	  //  /html/body/div[61]/div/div/table/tbody/tr[4]/td[4]/a
 	}
 	
 	@AfterMethod()
@@ -210,3 +219,26 @@ public class Login
 		driver.close();
 	}
 }
+
+
+
+
+
+
+
+//		//*************
+//		wait = new WebDriverWait(driver,50);
+//		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//ul[@id='LocationCountry_listbox']//child::li[2]")));
+//		// click on the Country as soon as it is visible  
+//		driver.findElement(By.xpath("//ul[@id='LocationCountry_listbox']//child::li[2]")).click();
+
+
+
+
+
+
+
+
+
+
+
