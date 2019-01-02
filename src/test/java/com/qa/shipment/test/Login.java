@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -31,7 +30,7 @@ public class Login
 	public static WebDriverWait wait;
 	
 	@BeforeMethod
-	public void logincredentials() throws Exception
+	public void login() throws Exception
 	{	
 		// Initialization of properties file
 		prop= new Properties();
@@ -50,9 +49,8 @@ public class Login
 	    driver.findElement(By.xpath("//input[@id='btnLogin']")).click();
 	  }
 	
-	
 	@Test(enabled = false)
-	public void search_shipment_global() throws InterruptedException
+	public void global_shipment_search() throws InterruptedException
 	{
 		// Validating user are in Company Selection page
 		WebElement actual = driver.findElement(By.xpath("//a[@class='logoarea']"));
@@ -109,7 +107,6 @@ public class Login
 		js.executeScript("window.scrollBy(0,-1000)");
 		Thread.sleep(10000);
 	}
-	
 	
 	@Test(enabled=true)
 	public void create_shipment() throws InterruptedException, IOException
@@ -188,29 +185,62 @@ public class Login
 		driver.findElement(By.xpath("//ul[@id='ddlStopType_listbox']//child::li[3]")).click();
 		Thread.sleep(2000);
 		driver.findElement(By.xpath("//a[@id='lookupLocationID']")).click();
-		Thread.sleep(5000);
+		Thread.sleep(4000);
 		// Select details from the child window 				
 		driver.findElement(By.xpath("//div[@id='modalDialog']//input[@id='LocId']")).sendKeys("DEN USAUR");
 		Thread.sleep(2000);
 		driver.findElement(By.xpath("//div[@id='modalDialog']//button[@id='btnLocationSearch']")).click();
-		Thread.sleep(2000);
+		Thread.sleep(5000);
 		driver.findElement(By.xpath("//*[@id='Location']/div[3]/table/tbody/tr[3]/td[1]/input")).click();
-	    Thread.sleep(2000);
-	    driver.findElement(By.xpath("//div[@class='ui-dialog-buttonset']//button[@id='Select']")).click();
-	    Thread.sleep(5000);
-	    JavascriptExecutor js1 = (JavascriptExecutor) driver;
+		Thread.sleep(2000);
+		driver.findElement(By.xpath("//div[@class='ui-dialog-buttonset']//button[@id='Select']")).click();
+		Thread.sleep(5000);
+		JavascriptExecutor js1 = (JavascriptExecutor) driver;
 		js1.executeScript("window.scrollBy(0,200)");
 		Thread.sleep(5000);
-	    // Calender input code!!
-	    driver.findElement(By.xpath("/html/body/div[1]/div/div/div[2]/div/div[2]/div[1]/div[4]/div[2]/div[1]/div/div[3]/table/tbody/tr[4]/td[2]/div/div/div/form/div/div/div[1]/div[1]/div/div[2]/span/span/span/span[1]")).click();
-	    Thread.sleep(5000);
-	    driver.findElement(By.xpath("/html/body/div[61]/div/div/div[1]/a[3]/span")).click();
-	    
-	    Thread.sleep(2000);
-	    driver.findElement(By.xpath("//a[@id='btnEdit' and @class='k-button k-button-icontext k-primary k-grid-update btnEdit']")).click();
-	    Thread.sleep(7000);		
-	     
-	  //  /html/body/div[61]/div/div/table/tbody/tr[4]/td[4]/a
+		// Calender input code!!
+		driver.findElement(By.xpath("//input[@id='ShipperRequestedDeliveryDate_2_2']")).sendKeys("1/10/2019");
+		Thread.sleep(2000);
+		driver.findElement(By.xpath("//a[@id='btnEdit' and @class='k-button k-button-icontext k-primary k-grid-update btnEdit']")).click();
+		Thread.sleep(7000);	
+		    
+		// Add New Product Details
+		driver.findElement(By.xpath("//div[@id='ShipmentProductGrid']//div[@class='k-header k-grid-toolbar k-grid-top']//a[contains(@class,'k-button k-button-icontext')]")).click();
+		Thread.sleep(3000);  
+		driver.findElement(By.xpath("//input[@name='txtProduct']")).sendKeys("ABCDEFGH");
+		driver.findElement(By.xpath("//input[@name='txtProductDtlsID']")).sendKeys("ABCDEFGH");
+		driver.findElement(By.xpath("//input[@id='Quantity']")).sendKeys("10");
+		Thread.sleep(3000);
+		driver.findElement(By.xpath("//span[contains(text(),'- Select -  ')]")).click();
+		Thread.sleep(3000);
+		// Unit Of Measure
+		driver.findElement(By.xpath("//ul[@id='UnitMeasurelookup_listbox']//li[@class='k-item'][contains(text(),'Bag')]")).click();
+		driver.findElement(By.xpath("//input[@id='Weight']")).sendKeys("100");
+		Thread.sleep(3000);
+		//Weight Unit Of Measure
+		driver.findElement(By.xpath("//span[contains(text(),'- Select -  ')]")).click();
+		Thread.sleep(2000);
+		driver.findElement((By.xpath("//ul[@id='WeigthUomlookup_listbox']//child::li[2]"))).click();
+		//Billed Quantity
+		driver.findElement(By.xpath("//input[@id='BillQty']")).sendKeys("10");
+		driver.findElement(By.xpath("//input[@id='Length']")).sendKeys("10");
+		driver.findElement(By.xpath("//input[@id='Width']")).sendKeys("10");
+		driver.findElement(By.xpath("//input[@id='Height']")).sendKeys("10");
+		Thread.sleep(2000);
+		driver.findElement(By.xpath("//span[contains(text(),'- Select -  ')]")).click();
+		Thread.sleep(2000);
+		driver.findElement(By.xpath("//ul[@id='DimUomlookup_listbox']//child::li[2]")).click();
+		Thread.sleep(3000);
+		driver.findElement(By.linkText("Update")).click();
+		Thread.sleep(2000);
+		driver.findElement(By.xpath("//div[@class='dropdown slick-slide slick-active']//span[contains(text(),'Save')]")).click();
+		Thread.sleep(3000);
+		// Switching to Alert        
+        Alert alert = driver.switchTo().alert();	
+        alert.accept();
+        Thread.sleep(10000);
+        //Success! Shipment Successfully Updated.
+		
 	}
 	
 	@AfterMethod()
@@ -219,26 +249,4 @@ public class Login
 		driver.close();
 	}
 }
-
-
-
-
-
-
-
-//		//*************
-//		wait = new WebDriverWait(driver,50);
-//		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//ul[@id='LocationCountry_listbox']//child::li[2]")));
-//		// click on the Country as soon as it is visible  
-//		driver.findElement(By.xpath("//ul[@id='LocationCountry_listbox']//child::li[2]")).click();
-
-
-
-
-
-
-
-
-
-
 

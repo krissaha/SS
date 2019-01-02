@@ -9,7 +9,7 @@
       <class name="com.qa.shipment.test.Login">
         <methods>
           <include name="tearDown"/>
-          <include name="search_shipment_global"/>
+          <include name="create_shipment"/>
           <include name="logincredentials"/>
         </methods>
       </class> <!-- com.qa.shipment.test.Login -->
