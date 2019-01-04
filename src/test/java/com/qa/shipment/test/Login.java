@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -39,7 +40,8 @@ public class Login
 		System.setProperty("webdriver.chrome.driver","E:\\Selenium\\chromedriver.exe");  //Launching chrome driver
 		driver=new ChromeDriver();
 	    driver.get(prop.getProperty("Url")); //Launching url
-		driver.manage().window().maximize();
+	    driver.manage().deleteAllCookies();
+	    driver.manage().window().maximize();
 		driver.findElement(By.xpath("//input[@id='Email']")).sendKeys(prop.getProperty("Email"));  // Entering email and password
 		driver.findElement(By.xpath("//input[@id='Password']")).sendKeys(prop.getProperty("Password"));
 		String hiddenCaptchaVal = "";   // Enter Captcha
@@ -68,7 +70,7 @@ public class Login
 		driver.findElement(By.xpath("//div[@class='dropdown slick-slide slick-active' and @data-slick-index='0']")).click();
 		driver.manage().timeouts().implicitlyWait(5,TimeUnit.SECONDS);
 		driver.findElement(By.xpath("//input[@data-id='1140687']")).click();
-		driver.manage().timeouts().implicitlyWait(2,TimeUnit.SECONDS);
+		Thread.sleep(5000);
 		driver.findElement(By.xpath("//div[@class='dropdown slick-slide slick-active' and @data-slick-index='2']")).click();
 	}
 	
@@ -102,9 +104,9 @@ public class Login
 		driver.findElement(By.xpath("//input[@data-id='1140548']")).click();
 		// click on edit button
 		driver.findElement(By.xpath("//div[@class='dropdown slick-slide slick-active' and @data-slick-index='2']")).click();
-		//Thread.sleep(10000);
-		JavascriptExecutor js = (JavascriptExecutor) driver;
-		js.executeScript("window.scrollBy(0,-1000)");
+		Thread.sleep(5000);
+		JavascriptExecutor js = ((JavascriptExecutor) driver);
+		js.executeScript("window.scrollBy(0,-2000)");
 		Thread.sleep(10000);
 	}
 	
@@ -128,10 +130,13 @@ public class Login
 		driver.findElement(By.xpath("//div[@class='dropdown slick-slide slick-active' and @data-slick-index='1']")).click();
 		Thread.sleep(2000);
 		driver.manage().timeouts().pageLoadTimeout(5,TimeUnit.SECONDS);
-		JavascriptExecutor js = (JavascriptExecutor) driver;
-		js.executeScript("window.scrollBy(0,-2000)");
+		JavascriptExecutor js1 = (JavascriptExecutor) driver;
+		js1.executeScript("window.scrollBy(0,-2000)");
 		Thread.sleep(3000);
 		driver.findElement(By.xpath("//div[@class='show-sidebar']")).click();
+		Thread.sleep(3000);
+		WebElement shipmentno = driver.findElement(By.id("ShipmentNumber"));
+				
 		driver.findElement(By.xpath("//span[contains(text(), '- Select Branch -')]")).click();
 		Thread.sleep(3000);
 		driver.findElement(By.xpath("//ul[@id='BranchKey_listbox']//child::li[3]")).click();
@@ -195,8 +200,8 @@ public class Login
 		Thread.sleep(2000);
 		driver.findElement(By.xpath("//div[@class='ui-dialog-buttonset']//button[@id='Select']")).click();
 		Thread.sleep(5000);
-		JavascriptExecutor js1 = (JavascriptExecutor) driver;
-		js1.executeScript("window.scrollBy(0,200)");
+		JavascriptExecutor js2 = (JavascriptExecutor) driver;
+		js2.executeScript("window.scrollBy(0,200)");
 		Thread.sleep(5000);
 		// Calender input code!!
 		driver.findElement(By.xpath("//input[@id='ShipperRequestedDeliveryDate_2_2']")).sendKeys("1/10/2019");
@@ -223,8 +228,11 @@ public class Login
 		driver.findElement((By.xpath("//ul[@id='WeigthUomlookup_listbox']//child::li[2]"))).click();
 		//Billed Quantity
 		driver.findElement(By.xpath("//input[@id='BillQty']")).sendKeys("10");
+		Thread.sleep(2000);
 		driver.findElement(By.xpath("//input[@id='Length']")).sendKeys("10");
+		Thread.sleep(2000);
 		driver.findElement(By.xpath("//input[@id='Width']")).sendKeys("10");
+		Thread.sleep(2000);
 		driver.findElement(By.xpath("//input[@id='Height']")).sendKeys("10");
 		Thread.sleep(2000);
 		driver.findElement(By.xpath("//span[contains(text(),'- Select -  ')]")).click();
@@ -240,6 +248,76 @@ public class Login
         alert.accept();
         Thread.sleep(10000);
         //Success! Shipment Successfully Updated.
+        boolean b1 = driver.findElement(By.xpath("//div[@id='result_info']")).isDisplayed();
+        if(b1 == true)
+        {
+        	WebElement el = driver.findElement(By.xpath("//div[@id='result_info']"));
+        	System.out.println(el.getText());
+        	try{
+                List<WebElement> elements = driver.findElements(By.xpath("//div[@id='divShipmentNumber']//input[@id='ShipmentNumber']"));
+                for(WebElement ele : elements){
+                    System.out.println("------------------------------------------------------------");
+                    System.out.println("Shipment number = " + ele.getAttribute("value"));
+                    System.out.println("------------------------------------------------------------");
+                }}finally{}
+        }
+        else{
+        	System.out.println("Shipment number not displayed");
+        }
+}
+	
+	@Test(enabled=false)
+	public void Edit_shipment_number() throws InterruptedException
+	{
+		// Validating user are in Company Selection page
+		WebElement actual = driver.findElement(By.xpath("//a[@class='logoarea']"));
+		Assert.assertTrue(actual.isDisplayed());
+		// Select Customer Tricorbraun
+		Select oS = new Select(driver.findElement(By.id("SelectedCompanyId")));
+		oS.selectByValue("5791");
+		// Click on Submit button
+		driver.findElement(By.className("newsc")).click();
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		// validation for Dashboard page
+		String s = "Dashboard";
+		Assert.assertEquals(s, driver.getTitle());
+		// Click on shipment module from the left panel
+		driver.findElement(By.xpath("//span[contains(text(),'Shipment')]")).click();
+		Thread.sleep(5000);
+		// Delete date fields
+		driver.findElement(By.xpath("//input[@id='CreatedDateFrom']")).clear();
+		driver.findElement(By.xpath("//input[@id='CreatedDateTo']")).clear();
+		// Enter Text in Shipment number
+		driver.findElement(By.xpath("//textarea[@id='ShipmentNo']")).sendKeys("11305481");
+		// click on search
+		driver.findElement(By.xpath("//div[@class='dropdown slick-slide slick-active' and @data-slick-index='0']")).click();
+		Thread.sleep(5000);
+		// Select the check box
+		driver.findElement(By.xpath("//td[@role='gridcell']//input[@type='checkbox']")).click();
+		// click on edit button
+		driver.findElement(By.xpath("//div[@class='dropdown slick-slide slick-active' and @data-slick-index='2']")).click();
+		Thread.sleep(5000);
+		JavascriptExecutor js = ((JavascriptExecutor) driver);
+		js.executeScript("window.scrollBy(0,-700)");
+		Thread.sleep(5000);
+		driver.findElement(By.xpath("//div[@class='show-sidebar']")).click();
+		Thread.sleep(3000);
+		driver.findElement((By.xpath("//a[@class='k-button k-button-icontext k-grid-edit btnProEdit']"))).click();
+		Thread.sleep(3000);
+		driver.findElement(By.xpath("//input[@id='Length']")).sendKeys("20");
+		Thread.sleep(2000);
+		driver.findElement(By.xpath("//input[@id='Width']")).sendKeys("20");
+		Thread.sleep(2000);
+		driver.findElement(By.xpath("//input[@id='Height']")).sendKeys("20");
+		Thread.sleep(2000);
+		driver.findElement(By.linkText("Update")).click();
+		Thread.sleep(2000);
+		driver.findElement(By.xpath("//div[@class='dropdown slick-slide slick-active']//span[contains(text(),'Save')]")).click();
+		Thread.sleep(5000);
+		Alert alert = driver.switchTo().alert();	
+        alert.accept();
+        Thread.sleep(10000);
+		
 		
 	}
 	

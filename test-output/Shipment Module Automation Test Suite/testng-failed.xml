@@ -8,9 +8,9 @@
     <classes>
       <class name="com.qa.shipment.test.Login">
         <methods>
+          <include name="login"/>
           <include name="tearDown"/>
-          <include name="create_shipment"/>
-          <include name="logincredentials"/>
+          <include name="global_shipment_search"/>
         </methods>
       </class> <!-- com.qa.shipment.test.Login -->
     </classes>

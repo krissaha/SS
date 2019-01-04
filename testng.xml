@@ -4,11 +4,11 @@
 	<listeners>
 		<listener class-name="com.qa.Report.ExtentReportListner" />
 	</listeners>
-	
-  	<test name="Shipment Module">
-    	<classes>
-      		<class name="com.qa.shipment.test.Login"/>
-    	</classes>
-  	</test>
-  	 
+
+	<test name="Shipment Module">
+		<classes>
+			<class name="com.qa.shipment.test.Login" />
+		</classes>
+	</test>
+
 </suite> 
